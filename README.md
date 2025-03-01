@@ -12,15 +12,21 @@
 ```bash
 git clone https://github.com/AliMRBS/magnusshop_project.git
 ```
+### 2. ساخت محیط مجازی (اختیاری، توصیه‌شده)
 
-### 2. نصب وابستگی‌ها از فایل `requirements.txt`
+قبل از نصب وابستگی‌ها، پیشنهاد می‌شود یک محیط مجازی (virtual environment) ایجاد کنید.
+در مسیر پروژه، دستور زیر را اجرا کنید:  
+```bash
+python -m venv venv
+```
+### 3. نصب وابستگی‌ها از فایل `requirements.txt`
 برای نصب وابستگی‌ها، دستور زیر را اجرا کنید:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. نصب و راه‌اندازی Redis
+### 4. نصب و راه‌اندازی Redis
 
 #### نصب Redis:
 - **ویندوز:** دانلود و نصب [Redis for Windows](https://github.com/microsoftarchive/redis/releases)
@@ -28,13 +34,13 @@ pip install -r requirements.txt
 #### راه‌اندازی Redis:
 - **ویندوز:** اجرای `redis-server.exe`
 
-### 4. نصب PostgreSQL
+### 5. نصب PostgreSQL
 
 برای استفاده از PostgreSQL به عنوان دیتابیس، ابتدا باید PostgreSQL را روی سیستم خود نصب کنید.
 
 - **ویندوز:** دانلود و نصب [PostgreSQL](https://www.postgresql.org/download/)
 
-### 5. ایجاد دیتابیس و کاربر در PostgreSQL
+### 6. ایجاد دیتابیس و کاربر در PostgreSQL
 
 پس از نصب PostgreSQL، یک دیتابیس و کاربر جدید ایجاد کنید:
 
@@ -62,7 +68,7 @@ CREATE USER magnususer WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE magnusshop TO magnususer;
 ```
 
-### 6. تنظیمات دیتابیس در فایل `settings.py`
+### 7. تنظیمات دیتابیس در فایل `settings.py`
 
 در فایل `settings.py`، بخش دیتابیس را به شکل زیر تغییر دهید:
 
@@ -79,7 +85,7 @@ DATABASES = {
 }
 ```
 
-### 7. ایمپورت بکاپ دیتابیس
+### 8. ایمپورت بکاپ دیتابیس
 
 برای مشاهده تمامی قابلیت های سایت یک فایل `backup.sql` در دایرکتوری پروژه قرار داده شده است. برای استفاده از آن دستور زیر را اجرا کنید:
 
@@ -87,7 +93,7 @@ DATABASES = {
 psql -U magnususer -d magnusshop -f backup.sql
 ```
 
-### 8. انجام مایگریت‌ها
+### 9. انجام مایگریت‌ها
 
 برای ایجاد جداول دیتابیس، مایگریشن‌ها را اجرا کنید:
 
@@ -95,7 +101,7 @@ psql -U magnususer -d magnusshop -f backup.sql
 python manage.py migrate
 ```
 
-### 9. ساخت یک سوپر یوزر
+### 20. ساخت یک سوپر یوزر
 
 برای دسترسی به پنل مدیریت Django:
 
@@ -103,7 +109,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-### 10. اجرای سرور توسعه Django
+### 11. اجرای سرور توسعه Django
 
 ```bash
 python manage.py runserver
