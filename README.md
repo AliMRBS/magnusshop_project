@@ -97,7 +97,7 @@ DATABASES = {
 To explore all the website's features, a `ms_backup.sql` file is provided in the project directory. To import it, run:
 
 ```bash
-psql -U magnususer -d magnusshop -f backup.sql
+psql -U magnususer -d magnusshop -f ms_backup.sql
 ```
 
 ### 9. Apply Migrations
@@ -142,34 +142,6 @@ To access the admin panel: [`http://127.0.0.1:8000/admin`](http://127.0.0.1:8000
 ### 🔧 Admin Features:
 
 - 📋 **Manage products, categories, brands, orders, payments, reviews, and more**
-
-# Apps Overview
-
-To improve readability and scalability, this project consists of six applications.
-
-## 1. Shop App
-
-This app includes models for products, product categories, product attributes, and brands. It handles product display, categorization, search functionality, filtering, and sorting in its views.
-
-## 2. MagnusPlus App
-
-This app manages models related to site subscription packages and their features. It also handles subscription purchases.
-
-## 3. Account App
-
-Since Django’s default user management models were insufficient for this project, a separate app was created to ensure scalability. This app stores user-related data such as identity information, contact details, addresses, and subscription status. It also handles login, logout, registration, address management, and profile updates, along with necessary form validations.
-
-## 4. Cart App
-
-This app contains the `cart` class, which stores shopping cart items, their quantity, and total price using session-based storage. It manages adding, removing, and editing products in the cart.
-
-## 5. Payment App
-
-This app includes models related to order processing and manages order creation.
-
-## 6. Finance App
-
-This app stores payment transaction details and different payment gateways. It also processes transaction creation and verification in its views. (Currently, the project is connected to the sandbox mode of the [Aqayepardakht](https://aqayepardakht.ir/) payment gateway, allowing for successful and failed payment testing.)
 
 # TODO:
 -   [x]	Add product comments section
