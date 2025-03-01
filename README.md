@@ -133,7 +133,7 @@ To access the admin panel: [`http://127.0.0.1:8000/admin`](http://127.0.0.1:8000
 - ✅ **User registration and login** with **email verification** + **temporary code for password reset and change**
 - 🔍 **Search, view, and sort products** by categories and filters
 - 🛒 **Add products to the shopping cart** (even without login) + **edit and remove products from the cart**
-- 🛒 **Complete purchase and redirect to the test payment gateway** (login required)
+- 🛒 **Complete purchase and redirect to the [Aghaye Pardakht](https://aqayepardakht.ir/) test payment gateway** (login required)
 - ✍️ **Submit reviews for products** (only for verified users)
 - ⭐ **Purchase Magnus Plus monthly subscriptions**
 - 🏠 **Manage user account information** including phone number, shipping addresses, and order details
@@ -155,9 +155,9 @@ To access the admin panel: [`http://127.0.0.1:8000/admin`](http://127.0.0.1:8000
 
 ## Technologies Used
 
-- **Backend:** [Django 4.2](https://www.djangoproject.com/)
+- **Backend:** [Django](https://www.djangoproject.com/)
 - **Frontend:** HTML, CSS, JavaScript, [Bootstrap](https://getbootstrap.com/), [Tailwind CSS](https://tailwindcss.com/)
-- **Database:** [PostgreSQL 17](https://www.postgresql.org/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/)
 - **Caching:** [Redis](https://redis.io/)
 - **Authentication:** Customized Django built-in authentication system and email OTP verification
 
