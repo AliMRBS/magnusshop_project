@@ -18,6 +18,7 @@ git clone https://github.com/AliMRBS/magnusshop_project.git
 #### در مسیر پروژه، دستور زیر را اجرا کنید:
 ```bash
 python -m venv venv
+venv\Scripts\activate
 ```
 ### 3. نصب وابستگی‌ها از فایل `requirements.txt`
 برای نصب وابستگی‌ها، دستور زیر را اجرا کنید:
