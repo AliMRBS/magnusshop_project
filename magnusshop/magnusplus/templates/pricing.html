@@ -1,0 +1,91 @@
+{% load humanize %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>خرید اشتراک مگنوس پلاس</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'magnusplus/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'shop/css/styles.css' %}">
+</head>
+<body>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show text-right" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+<link rel="stylesheet" href="https://cdn.lineicons.com/3.0/lineicons.css"> 
+<div class="container px-4 px-lg-5 mt-3">
+    <div class="row align-items-center">
+        <div class="col d-flex justify-content-start">
+            {% if user.is_authenticated %}
+                <a href="{% url 'account:logout' %}" class="btn btn-primary me-2">خروج</a>
+            {% else %}
+                <a href="{% url 'account:login' %}" class="btn btn-primary me-2">ثبت نام/ ورود</a>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-md-6 d-flex justify-content-end">
+            <a class="navbar-brand" href="{% url 'product-list' %}" style="font-size: 1.5rem;">
+                مگنوس
+                <img src="{% static 'shop/pictures/logo/M_logo.png' %}" alt="Magnus Logo" width="40" height="40">
+            </a>    
+        </div>
+    </div>
+</div>
+
+<section class="price_plan_area section_padding_130_80" id="pricing">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-8 col-lg-6">
+                <div class="section-heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                    <h3>اشتراک های مگنوس پلاس</h3>
+                    <p>!با خرید اشتراک های مگنوس پلاس از مزایای ویژه آنها برخوردار شوید</p>
+                    <div class="line"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center text-center">
+            
+            {% for package in packages %}
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                <div class="single_price_plan wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                    <div class="title">
+                        <h3>{{ package.title }}</h3>
+                        <div class="line" style="margin: 0 auto;"></div>
+                    </div>
+                    <div class="price">
+                        <h4>{{ package.price|intcomma }}</h4>
+                        <h6>تومان ماهانه</h6>
+                    </div>
+                    <div class="description">
+                        {% for attr in package.attributes.all %}
+                            <p><i class="lni lni-checkmark-circle" style="padding: 3px 8px;"></i> {{ attr.title }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="button">
+                        <!-- فرم خرید اشتراک -->
+                        <form method="post" action="{% url 'magnusplus:purchase-subscription' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="package_id" value="{{ package.id }}">
+                            <button type="submit" class="btn btn-success btn-2">خرید اشتراک</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="magnusplus/js/script.js"></script>
+</body>
+</html>

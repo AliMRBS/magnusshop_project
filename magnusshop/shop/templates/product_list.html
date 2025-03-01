@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %} فروشگاه اینترنتی مگنوس {% endblock %}
+{% block content %}
+     {% include 'slider.html' %}
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-0">
+            <div class="sort-buttons mb-4"> 
+                <i class="fa-solid fa-arrow-up-wide-short"></i>
+                <span class="sort-title">مرتب سازی بر اساس:</span>
+            
+                <a href="?sort=price-asc{% if searched %}&searched={{ searched }}{% endif %}" 
+                   class="sort-link {% if sort == 'price-asc' %}active{% endif %}">ارزان‌ترین</a>
+                <a href="?sort=price-desc{% if searched %}&searched={{ searched }}{% endif %}" 
+                   class="sort-link {% if sort == 'price-desc' %}active{% endif %}">گران‌ترین</a>
+                <a href="?sort=newest{% if searched %}&searched={{ searched }}{% endif %}" 
+                   class="sort-link {% if sort == 'newest' %}active{% endif %}">جدیدترین</a>
+            </div>
+            
+            
+            <br>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                {% for product in products %}
+                {% if product.is_sale %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <div class="badge  text-white position-absolute" style="top: 0.5rem; right: 0.5rem; background-color: red">تخفیف ویژه</div>
+                        <img class="card-img-top" src="{{ product.images.first.image.url }}" alt="..." />
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{ product.title }}</h5>
+                                <div class="d-flex justify-content-center small text-warning mb-2">
+                                    {% with ''|center:product.star as range %}
+                                        {% for product in range %}
+                                            <div class="bi-star-fill"></div>
+                                        {% endfor %}
+                                    {% endwith %}
+
+                                </div>
+                                {% if product.is_active %}
+                                    {{ product.sale_price|intcomma }} تومان <br>
+                                    <strike>{{ product.price|intcomma }} تومان </strike>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                {% if product.is_active %}
+                                <a class="btn btn-outline-dark mt-auto" href="{% url 'product-detail' product.id %}">جزئیات محصول</a>
+                                {% else %}
+                                    <p style="color: red;">اتمام موجودی</p>
+                                {% endif %}                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="{{ product.images.first.image.url }}" alt="..." />
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{ product.title }}</h5>
+                                <div class="d-flex justify-content-center small text-warning mb-2">
+                                    {% with ''|center:product.star as range %}
+                                        {% for product in range %}
+                                            <div class="bi-star-fill"></div>
+                                        {% endfor %}
+                                    {% endwith %}
+                                </div>
+                                {% if product.is_active %}
+                                    {{ product.price|intcomma }} تومان
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                {% if product.is_active %}
+                                <a class="btn btn-outline-dark mt-auto" href="{% url 'product-detail' product.id %}">جزئیات محصول</a>
+                                {% else %}
+                                    <p style="color: rgb(53, 53, 53);">اتمام موجودی</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="pagination-container d-flex justify-content-center mt-4">
+            <ul class="pagination">
+                {% if products.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if sort %}&sort={{ sort }}{% endif %}" aria-label="اول">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.previous_page_number }}{% if sort %}&sort={{ sort }}{% endif %}">قبلی</a>
+                    </li>
+                {% endif %}
+        
+                <li class="page-item disabled">
+                    <span class="page-link">صفحه {{ products.number }} از {{ products.paginator.num_pages }}</span>
+                </li>
+        
+                {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.next_page_number }}{% if sort %}&sort={{ sort }}{% endif %}">بعدی</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.paginator.num_pages }}{% if sort %}&sort={{ sort }}{% endif %}" aria-label="آخر">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>     
+    </section>
+    {% include 'banner.html' %}
+    <br><br>
+    {% include 'related_products.html' %}
+    
+{% endblock %}

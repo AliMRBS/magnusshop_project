@@ -1,0 +1,52 @@
+{% load static %}
+{% load humanize %}
+{% if random_product %}
+<div class="container">
+    <section class="super-offer-sec">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="super-offer-box">
+                    <span class="super-offer-box-title">پیشنهاد شگفت انگیز</span>
+                    <div class="body">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="img-container">
+                                    <img src="{{ random_product.images.first.image.url }}" alt="">
+                                    <div class="text-center">
+                                        {% if random_product.is_active %}
+                                        <a class="btn btn-outline-dark mt-auto" href="{% url 'product-detail' random_product.id %}">جزئیات محصول</a>
+                                        {% else %}
+                                            <p style="color: rgb(53, 53, 53);">اتمام موجودی</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="spesification">
+                                    <div class="price-row">
+                                        <div class="price">{{random_product.price|intcomma}} تومان</div>
+                                        <div class="off">%{{discount}} تخفیف</div>
+                                    </div>
+                                    <div class="title">{{random_product.title}}</div>
+                                    <div class="counter-down">
+                                        <span id="secs">40</span> :
+                                        <span id="mins">26</span> :
+                                        <span id="hrs">19</span>
+                                    </div>
+                                    <div class="remaining-time">زمان باقی مانده تا تخفیف ویژه</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="banner">
+                    <img src="{% static 'shop/pictures/banner/banner1.jpg' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endif %}

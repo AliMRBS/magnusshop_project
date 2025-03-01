@@ -1,0 +1,208 @@
+{% extends 'profile.html' %}
+{% block profile-content %}
+
+<div class="card shadow-sm p-3" style="max-width: 100%; width: 100%;">
+
+<h3 class="text-center mb-4">مدیریت آدرس‌ها</h3>
+
+
+<div class="d-flex justify-content-start my-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal" onclick="openAddModal()">
+        افزودن آدرس
+    </button>
+</div>
+<hr class="border-t border-gray-300 my-4">
+
+<div id="addresses">
+    {% for addr in addresses %}
+    <div class="address-item p-3 rounded border border-secondary mb-4">
+        <p class="mb-1"><strong>{{ addr.province }}</strong> - {{ addr.city }}</p>
+        <p class="mb-1">{{ addr.address }} - پلاک {{ addr.house_number }} - واحد {{ addr.unit_number }} - کد پستی: {{ addr.zipcode }}</p>
+        <div class="d-flex justify-content-between mt-3">
+            <button class="btn btn-warning btn-sm" onclick="openEditModal({{ addr.id }}, '{{ addr.province }}', '{{ addr.city }}', '{{ addr.address }}', '{{ addr.house_number }}', '{{ addr.unit_number }}', '{{ addr.zipcode }}')">
+                ویرایش
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAddress({{ addr.id }})">
+                حذف
+            </button>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">هنوز هیچ آدرسی ثبت نشده است.</p>
+    {% endfor %}
+</div>
+</div>
+
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addressModalLabel">مدیریت آدرس</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addressForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" id="action" value="add">
+                    <input type="hidden" name="address_id" id="address_id">
+                    {{ form.as_p }}
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-success">ذخیره</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">تأیید حذف</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                آیا مطمئن هستید که می‌خواهید این آدرس را حذف کنید؟
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function openAddModal() {
+        document.getElementById('addressForm').reset();
+        document.getElementById('action').value = 'add';
+        document.getElementById('addressModalLabel').textContent = 'افزودن آدرس';
+        const modal = new bootstrap.Modal(document.getElementById('addressModal'));
+        modal.show();
+        handleModalClose();
+    }
+
+    function openEditModal(id, province, city, address, house_number, unit_number, zipcode) {
+        document.getElementById('address_id').value = id;
+        document.getElementById('action').value = 'edit';
+        document.getElementById('id_province').value = province;
+        document.getElementById('id_city').value = city;
+        document.getElementById('id_address').value = address;
+        document.getElementById('id_house_number').value = house_number;
+        document.getElementById('id_unit_number').value = unit_number;
+        document.getElementById('id_zipcode').value = zipcode;
+        document.getElementById('addressModalLabel').textContent = 'ویرایش آدرس';
+        const modal = new bootstrap.Modal(document.getElementById('addressModal'));
+        modal.show();
+        handleModalClose();
+    }
+
+    function handleModalClose() {
+        const modalElement = document.getElementById('addressModal');
+    
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            document.body.classList.remove('modal-open');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        });
+    }
+
+    let deleteAddressId = null;
+
+    function deleteAddress(id) {
+        deleteAddressId = id; 
+        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        modal.show(); 
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+        if (deleteAddressId !== null) {
+            fetch(`/account/address/delete/${deleteAddressId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    console.error('خطا در حذف آدرس');
+                }
+            })
+            .catch(error => console.error('خطای سرور:', error));
+        }
+    });
+
+    
+
+    document.getElementById('addressForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+    
+        const action = document.getElementById('action').value;
+        let url = "{% url 'account:add-address' %}";
+    
+        if (action === 'edit') {
+            const addressId = document.getElementById('address_id').value;
+            url = `/account/address/edit/${addressId}/`;
+        }
+    
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                document.querySelectorAll('#addressModal *').forEach(el => el.blur());
+    
+                const modalElement = document.getElementById('addressModal');
+                const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+                modalInstance.hide();
+    
+                location.reload();
+            } else if (data.errors) {
+                alert("خطایی رخ داده است.");
+                console.log(data.errors);
+            }
+        })
+        .catch(error => console.error("خطای سرور:", error));
+    });
+
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => {
+        console.log(response); 
+        return response.json();
+    })
+    .then(data => {
+        if (data.message) {
+            const modalElement = document.getElementById('addressModal');
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+            modalInstance.hide();
+            location.reload();
+        } else if (data.errors) {
+            alert("خطایی رخ داده است.");
+            console.log(data.errors);
+        }
+    })
+    .catch(error => console.error("خطای سرور:", error));
+        
+    
+</script>
+
+{% endblock %}

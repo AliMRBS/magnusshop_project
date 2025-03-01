@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white text-center rounded-top">
+                        <h3 class="mb-0">سفارش شما با موفقیت ثبت شد</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="text-end">آدرس ارسال:</th>
+                                    <td>{{ order.shipping_address }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="text-end">نام کامل:</th>
+                                    <td>{{ order.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="text-end">شماره تماس:</th>
+                                    <td>{{ order.profile.phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="text-end">مبلغ کل:</th>
+                                    <td><strong>{{ order.total_amount }} تومان</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted text-center mt-4">برای پرداخت، روی دکمه زیر کلیک کنید:</p>
+                        <form method="post" action="{% url 'finance:pay-order' order.id %}">
+                            {% csrf_token %}
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    هدایت به درگاه پرداخت
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center bg-light rounded-bottom">
+                        <a href="{% url 'account:profile-order' %}" class="btn btn-outline-primary btn-sm px-4 py-2">
+                            بازگشت به صفحه اصلی
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br><br><br><br><br><br><br><br><br>
+{% endblock %}

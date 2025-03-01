@@ -1,0 +1,59 @@
+{% extends 'profile.html' %}
+
+{% block profile-content %}
+<div class="d-flex flex-column justify-content-center align-items-center vh-80 bg-light">
+    <div class="card shadow-sm p-3" style="max-width: 100%; width: 100%;">
+        <h3 class="text-center mb-4">ویرایش اطلاعات پروفایل</h3>
+        <form action="{% url 'account:profile-info' %}" method="POST">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label for="phone_number" class="form-label">شماره تلفن</label><br>
+                {{ form.phone_number }}
+            </div>
+
+            <div class="mb-4">
+                <label for="first_name" class="form-label">نام</label><br>
+                {{ form.first_name }}
+            </div>
+
+            <div class="mb-4">
+                <label for="last_name" class="form-label">نام خانوادگی</label><br>
+                {{ form.last_name }}
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="form-label">ایمیل</label><br>
+                {{ form.email }}
+            </div>
+
+            {% if profile.is_verified %}
+                <div class="alert alert-success">
+                    ایمیل شما تایید شده است.
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    ایمیل شما تایید نشده است. لطفا برای تایید ایمیل خود اقدام کنید.
+                    <a href="{% url 'account:verify-email' user_id=request.user.id %}" class="btn btn-warning">تایید ایمیل</a>
+                </div>
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="d-grid" style="max-width: 200px; margin: 0 auto;">
+                <button type="submit" class="btn btn-primary" >ذخیره</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

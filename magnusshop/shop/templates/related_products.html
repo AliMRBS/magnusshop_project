@@ -1,0 +1,84 @@
+{% load humanize %}
+<div class="container">
+
+<section class="dragable-list">
+    <div class="title">
+        <span>سایر محصولات</span>
+    </div>
+    {% if queryset_products %}
+        <div class="drag-container " style="margin: 20px">
+            <div class="owl-carousel owl-theme">
+            {% for product in queryset_products %}
+                {% if product.is_sale %}
+                <div class="col mb-5">
+                    <div class="card card-related h-100">
+                        <div class="badge  text-white position-absolute" style="top: 0.5rem; right: 0.5rem; background-color: red">تخفیف ویژه</div>
+                        <img class="card-img-top" src="{{ product.images.first.image.url }}" alt="..." />
+                        <div class="card-body card-related-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{ product.title }}</h5>
+                                <div class="d-flex justify-content-center small text-warning mb-2">
+                                    {% with ''|center:product.star as range %}
+                                        {% for product in range %}
+                                            <div class="bi-star-fill"></div>
+                                        {% endfor %}
+                                    {% endwith %}
+
+                                </div>
+                                {% if product.is_active %}
+                                    {{ product.sale_price|intcomma }} تومان <br>
+                                    <strike>{{ product.price|intcomma }} تومان </strike>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                {% if product.is_active %}
+                                <a class="btn btn-outline-dark mt-auto" href="{% url 'product-detail' product.id %}">جزئیات محصول</a>
+                                {% else %}
+                                    <p style="color: red;">اتمام موجودی</p>
+                                {% endif %}                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col mb-5">
+                    <div class="card card-related h-100">
+                        <img class="card-img-top" src="{{ product.images.first.image.url }}" alt="..." />
+                        <div class="card-body card-related-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{ product.title }}</h5>
+                                <div class="d-flex justify-content-center small text-warning mb-2">
+                                    {% with ''|center:product.star as range %}
+                                        {% for product in range %}
+                                            <div class="bi-star-fill"></div>
+                                        {% endfor %}
+                                    {% endwith %}
+                                </div>
+                                {% if product.is_active %}
+                                    {{ product.price|intcomma }} تومان
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                {% if product.is_active %}
+                                <a class="btn btn-outline-dark mt-auto" href="{% url 'product-detail' product.id %}">جزئیات محصول</a>
+                                {% else %}
+                                    <p style="color: rgb(53, 53, 53);">اتمام موجودی</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <br>
+            هیچ محصول مشابهی وجود ندارد
+    {% endif %}
+</div>
+</section>

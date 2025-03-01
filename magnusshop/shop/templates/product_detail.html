@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+{% load humanize %}
+
+<br><br>
+<div class="container">
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in product.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <a href="{{ image.image.url }}" data-fancybox="gallery" data-caption="{{ product.title }}">
+                                <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ product.title }}">
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">قبلی</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">بعدی</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h3 class="card-title">{{ product.title }}</h3>
+
+                    <div class="d-flex mt-3">
+                        <ul class="list-group custom-attributes">
+                            {% for attribute_value in product.attribute_values.all %}
+                            <li class="list-group-item custom-list-item">
+                                <strong>{{ attribute_value.attribute.title }}:</strong> {{ attribute_value.value }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="price-container mt-4">
+                        {% if product.is_sale %}
+                            <p class="price-text">
+                                <span class="old-price">{{ product.price|intcomma }}</span><br>
+                                <span class="sale-price">{{ product.sale_price|intcomma }} تومان</span>
+                            </p>
+                        {% else %}
+                            <p class="price-text">
+                                <span class="normal-price">{{ product.price|intcomma }} تومان</span>
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <label for="cart-qty" class="text-align">تعداد:</label>
+                    <div class="input-group quantity-input">
+                        <button type="button" class="btn btn-outline-secondary quantity-btn" id="increase-qty">+</button>
+                        <input type="text" class="form-control" id="cart-qty" value="1" min="1" max="5">
+                        <button type="button" class="btn btn-outline-secondary quantity-btn" id="decrease-qty">-</button>
+                    </div>
+
+                    <button class="btn btn-outline-custom-buy mt-3" type="button" value="{{ product.id }}" id="add-cart">افزودن به سبد خرید</button>
+                    <a href="{% url 'product-list' %}" class="btn btn-outline-secondary mt-3">بازگشت به صفحه محصولات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-3">
+        <p style="font-weight: bold; margin-top: 20px; margin-right: 10px;">
+            <span style="display: inline-block; border-bottom: 4px solid lightblue; padding: 5px;">معرفی محصول:</span>
+        </p>
+        
+        <div class="container m-1" style="padding: 0px 25px 15px 25px;">
+        {{ product.description|linebreaksbr }}
+    </div>
+    </div>
+    {% include 'product_comment.html' %}
+    <br><br><br><br><br><br><br><br><br>
+    {% include 'related_products.html' %}
+</div>
+
+
+<br><br><br>
+
+
+<script>
+    $(document).on('click', '#add-cart', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-add" %}',
+            data:{
+                product_id: $('#add-cart').val(),
+                product_qty: $('#cart-qty').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+
+            success: function(json){
+                document.getElementById('cart_quantity').textContent = json.qty;
+                location.reload();
+            },
+
+            error: function(xhr, errmsg, err){
+            }
+        })
+    });
+
+    document.getElementById('increase-qty').addEventListener('click', function () {
+        let qtyInput = document.getElementById('cart-qty');
+        let currentQty = parseInt(qtyInput.value);
+        if (currentQty < 5) {
+            qtyInput.value = currentQty + 1;
+        }
+    });
+
+    document.getElementById('decrease-qty').addEventListener('click', function () {
+        let qtyInput = document.getElementById('cart-qty');
+        let currentQty = parseInt(qtyInput.value);
+        if (currentQty > 1) {
+            qtyInput.value = currentQty - 1;
+        }
+    });
+</script>
+
+{% endblock %}

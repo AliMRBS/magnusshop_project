@@ -1,0 +1,36 @@
+{% load static %}
+
+<section class="slider">
+    <div class="slides">
+        <div class="item active" id="slide1">
+            <img src="{% static 'shop/pictures/slider/slider1.jpg' %}" alt="">
+        </div>
+        <div class="item" id="slide2">
+            <img src="{% static 'shop/pictures/slider/slider2.jpg' %}" alt="">
+        </div>
+        <div class="item" id="slide3">
+            <img src="{% static 'shop/pictures/slider/slider3.jpg' %}" alt="">
+        </div>
+        <div class="item" id="slide4">
+            <img src="{% static 'shop/pictures/slider/slider4.jpg' %}" alt="">
+        </div>
+        <div class="item" id="slide5">
+            <img src="{% static 'shop/pictures/slider/slider5.jpg' %}" alt="">
+        </div>
+        <div class="item" id="slide6">
+            <img src="{% static 'shop/pictures/slider/slider6.jpg' %}" alt="">
+        </div>
+        <div class="item" id="slide7">
+            <img src="{% static 'shop/pictures/slider/slider7.jpg' %}" alt="">
+        </div>
+    </div>
+    <div class="buttons">
+        <i onclick="setSlide('slide1', 1)" class="fa-solid fa-square"></i>
+        <i onclick="setSlide('slide2', 2)" class="fa-solid fa-square"></i>
+        <i onclick="setSlide('slide3', 3)" class="fa-solid fa-square"></i>
+        <i onclick="setSlide('slide4', 4)" class="fa-solid fa-square"></i>
+        <i onclick="setSlide('slide5', 5)" class="fa-solid fa-square"></i>
+        <i onclick="setSlide('slide4', 6)" class="fa-solid fa-square"></i>
+        <i onclick="setSlide('slide5', 7)" class="fa-solid fa-square"></i>
+    </div>
+</section>

@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود به حساب کاربری</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+
+</head>
+    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <img class="mx-auto h-40 w-auto" src="{% static 'shop/pictures/logo/M_logo.png' %}" alt="Magnus PLUS">
+        <h2 class="mt-10 text-center text-3xl/9 font-bold tracking-tight text-gray-900">وارد حساب کاربری خود شوید</h2>
+        {% if messages %}
+          <div class="mt-4">
+              {% for message in messages %}
+                    <p class="text-red-600 font-semibold text-center">{{ message }}</p>
+              {% endfor %}
+          </div>
+        {% endif %}
+
+      </div>
+    
+      <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form class="space-y-6 text-right" action="{% url 'account:login' %}" method="POST">
+            {% csrf_token %}
+            
+          <input type="hidden" name="next" value="{{ next }}">
+
+          <div>
+            <label for="email" class="block text-sm/6 font-medium text-gray-900">ایمیل</label>
+            <div class="mt-2">
+              <input type="email" name="email" autocomplete="username" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-1 -border-offset-1 border-gray-300 placeholder:text-gray-400 focus:border focus:border-2 focus:-border-offset-2 focus:border-indigo-600 sm:text-sm/6">
+            </div>
+          </div>
+    
+          <div>
+            <div class="flex items-center justify-between">
+                <div class="text-sm">
+                    <a href="{% url 'account:forgot-password' %}" class="font-semibold text-indigo-600 hover:text-indigo-500">فراموشی رمز عبور</a>
+                  </div>
+              <label for="password" class="block text-sm/6 font-medium text-gray-900">رمز عبور</label>
+
+            </div>
+            <div class="mt-2">
+                <input type="password" name="password" id="password" autocomplete="password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-1 -border-offset-1 border-gray-300 placeholder:text-gray-400 focus:border focus:border-2 focus:-border-offset-2 focus:border-indigo-600 sm:text-sm/6">
+            </div>
+          </div>
+
+          <div class="flex items-center mt-4">
+            <input type="checkbox" id="showPassword" class="mr-2">
+            <label for="showPassword" class="text-sm text-gray-600">نمایش رمز عبور</label>
+          </div>
+          
+          <div>
+            <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">ورود</button>
+          </div>
+        </form>
+    
+        <p class="mt-10 text-center text-sm/6 text-gray-500">
+          حساب کاربری ندارید؟
+          <a href="{% url 'account:signup' %}" class="font-semibold text-indigo-600 hover:text-indigo-500">ثبت نام</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const showPasswordCheckbox = document.getElementById('showPassword');
+      const passwordField = document.getElementById('password');
+    
+      showPasswordCheckbox.addEventListener('change', function() {
+        const type = showPasswordCheckbox.checked ? 'text' : 'password';
+        passwordField.type = type;
+      });
+    </script>
+</body>
+</html>

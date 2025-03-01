@@ -1,0 +1,47 @@
+{% extends 'profile.html' %}
+
+{% block profile-content %}
+<div class="card shadow-sm p-3" style="max-width: 100%; width: 100%;">
+    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <h3 class="text-center mb-4">اشتراک مگنوس پلاس</h3>
+        {% if start_date %}
+        <div class="card mb-4">
+            <div class="card-header text-white" style="background-color: #9d65f9">
+                <p><strong>نام اشتراک:</strong> {{ magnusplus_sub.title }}</p>
+                <p><strong>تاریخ شروع:</strong> {{ start_date }}</p>
+                <p><strong>تاریخ پایان:</strong> {{ end_date }}</p>
+                <p><strong>روز باقیمانده:</strong> {{ remaining_days }} روز</p>
+            </div>
+            <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered text-end">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="background-color:#e6daf9">ویژگی‌های اشتراک</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attr in magnusplus_sub.attributes.all %}
+                            <tr>
+                                <td>{{ attr.title }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+        {% else %}
+            <p>شما هنوز اشتراک مگنوس پلاس خریداری نکرده‌اید.</p>
+            <br><br><br><br>
+            <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm text-center">    
+                <a href="{% url 'magnusplus:pricing' %}" 
+                   class="btn btn-primary"
+                   style="border-radius: 4px; background-color: rgb(98, 46, 218); margin-top: 10px; padding: 8px 12px; font-size: 14px; font-weight: 600; color: white; text-align: center; width: auto;">
+                    خرید اشتراک
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

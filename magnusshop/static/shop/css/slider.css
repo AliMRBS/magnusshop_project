@@ -1,0 +1,264 @@
+.slider {
+    position: relative;
+    font-size: 1em;
+    width: 70%; /* عرض اسلایدر رو به 50% تغییر دادیم */
+    height: 32vh; /* ارتفاع اسلایدر ثابت باقی موند */
+    margin: auto;
+    margin-top: 15px;
+}
+
+.slider .slides .item {
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.slider .slides .active {
+    display: block;
+    animation-name: fadeIn;
+    animation-duration: 1.5s;
+    transition: opacity 1.5s ease-in-out; /* افزودن ترنزیشن به تغییرات */
+}
+
+.slider .slides .item img {
+    width: 100%;
+    height: 100%; /* برای اینکه تصویر کاملا به اسلایدر بخوره */
+    object-fit: cover;
+    border-radius: 15px; /* گرد کردن گوشه‌های عکس‌ها */
+}
+
+.slider .slides .item span {
+    position: absolute;
+    left: 8%;
+    bottom: 20%;
+    color: white;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.slider .buttons {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.slider .buttons i {
+    color: rgba(255, 255, 255, 0.604);
+    font-size: 1.3em;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.slider .buttons i:hover {
+    color: white;
+    font-size: 1.5em;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+.dragable-list img{
+    width: 65% !important;
+    margin: auto;
+}
+
+.dragable-list .title{
+    padding: 0px 20px;
+    padding-top: 20px;
+    margin-bottom: 5px;
+}
+
+.dragable-list .title span{
+    font-size: 1.4em;
+    color: rgba(0, 0, 0, 0.8);
+    border-bottom: 2px solid rgb(223, 0, 0);
+}
+
+
+/* تنظیم display برای container */
+.owl-carousel {
+    display: flex;
+    justify-content: space-between; /* یا center برای چینش یکنواخت */
+    flex-wrap: wrap;
+}
+
+/* تنظیم ارتفاع یکسان برای تمام کارت‌ها */
+.owl-carousel .item {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+/* تنظیم ارتفاع کارت‌ها به صورت ثابت و یکنواخت */
+.card-related {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* ارتفاع 100% برای همه کارت‌ها */
+    min-height: 400px; /* یا هر مقدار دلخواه برای ارتفاع ثابت */
+}
+
+/* تنظیم برای card-body که در داخل کارت است */
+.card-related-body {
+    flex-grow: 1;
+}
+
+/* supper offer selectors */
+/* استایل‌های پیش‌فرض برای صفحه دسکتاپ */
+.super-offer-sec {
+    padding: 20px;
+    font-size: 1em;
+    display: flex;
+    align-items: stretch;
+}
+
+.super-offer-sec .row {
+    width: 100%;
+}
+
+.super-offer-sec .super-offer-box {
+    text-align: center;
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    margin: 0px 10px;
+    margin-top: 7px;
+    flex: 1;  
+}
+
+.super-offer-box .super-offer-box-title {
+    background-color:#5918c4;
+    color: white;
+    padding: 8px 30px;
+    font-size: 1.5em;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: inline-block;
+}
+
+.super-offer-box .body {}
+
+.super-offer-box .body .img-container {
+    text-align: center;
+    padding: 0px 30px;
+}
+
+.super-offer-box .body .img-container img {
+    width: 100%;
+    margin: 20px 0px;
+}
+
+.super-offer-box .body .spesification {
+    padding: 30px 5px;
+}
+
+.super-offer-box .body .spesification .price-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.super-offer-box .body .spesification .price-row .price {
+    margin-left: 80px;
+    color: rgb(18, 0, 92);
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.super-offer-box .body .spesification .price-row .off {
+    background-color: #5918c4;
+    color: white;
+    padding: 8px 20px;
+    font-size: 1.1em;
+    border-radius: 10px;
+}
+
+.super-offer-box .body .spesification .title {
+    color: rgb(18, 0, 92);
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 40px 0px;
+}
+
+.super-offer-box .body .spesification .counter-down {
+    border-top: 1px solid rgba(0, 0, 0, 0.237);
+    margin: 20px 90px;
+    padding-top: 20px;
+    font-weight: bold;
+    font-size: 1.7em;
+    color: rgb(72, 72, 72);
+}
+
+.super-offer-box .body .spesification .remaining-time {
+    font-size: 1em;
+    color: rgb(159, 159, 159);
+}
+
+.super-offer-sec .banner {
+    text-align: center;
+    padding: 0px 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+}
+
+.super-offer-sec .banner img {
+    border-radius: 5px;
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* استایل‌ها برای صفحه موبایل */
+@media (max-width: 768px) {
+    .super-offer-sec {
+        font-size: 0.8rem; /* ۲۰ درصد کوچکتر از مقدار پیش‌فرض */
+    }
+
+    /* جلوگیری از خارج زدن قیمت از کادر */
+    .super-offer-box {
+        word-wrap: break-word;
+        overflow: hidden;
+    }
+
+    /* نمایش تایمر در یک سطر */
+    .counter-down {
+        display: flex;
+        gap: 10px; /* فاصله بین ساعت، دقیقه و ثانیه */
+        align-items: center;
+        justify-content: center;
+    }
+
+    .counter-down span {
+        display: inline-block;
+        margin: 0 5px;
+    }
+
+    /* تنظیمات برای قیمت */
+    .super-offer-box .body .spesification .price-row .price {
+        font-size: 1.2em; /* کمی کوچکتر برای موبایل */
+        margin-left: 0;
+    }
+
+    .super-offer-box .body .spesification .price-row .off {
+        font-size: 1em; /* کمی کوچکتر برای موبایل */
+    }
+
+    /* اطمینان از اینکه تصاویر درست در موبایل نمایش داده شوند */
+    .super-offer-box .body .img-container img {
+        width: 100%;
+        height: auto;
+    }
+}

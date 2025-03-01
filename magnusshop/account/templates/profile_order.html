@@ -1,0 +1,57 @@
+{% extends 'profile.html' %}
+{% load humanize %}
+{% block profile-content %}
+<div class="card shadow-sm p-3" style="max-width: 100%; width: 100%;">
+
+<h3 class="text-center mb-4">سفارش‌های من</h3>
+
+{% if orders %}
+    {% for order in orders %}
+    
+        <div class="card mb-4">
+            <div class="card-header text-white" style="background-color: #9d65f9">
+                <p><strong>تاریخ سفارش:</strong> {{ order.date_ordered }}</p>
+                <p><strong>وضعیت:</strong> {{ order.get_status_display }}</p>
+                <p><strong>کد پیگیری سفارش:</strong> {{ order.id }}</p>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">جزئیات سفارش:</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-end">
+                        <thead class="table-light">
+                            <tr>
+                                <th>نام محصول</th>
+                                <th>تعداد</th>
+                                <th>قیمت واحد (تومان)</th>
+                                <th>مجموع قیمت محصول (تومان)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.order_items.all %}
+                                <tr>
+                                    <td>{{ item.product.title }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.unit_price|intcomma }}</td>
+                                    <td>{{ item.total_price|intcomma }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr style="background-color:#e6daf9">
+                                <td colspan="3" class="text-start" ><strong>مجموع کل سفارش:</strong></td>
+                                <td><strong>{{ order.total_amount|intcomma }} تومان</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-warning text-center">
+        <p>شما هیچ سفارشی ثبت نکرده‌اید.</p>
+    </div>
+{% endif %}
+</div>
+
+{% endblock %}

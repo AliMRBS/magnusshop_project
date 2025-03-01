@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container mx-auto profile-container">
+    <div class="w-full p-4 bg-white shadow-lg rounded-lg">
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-semibold">پروفایل کاربری</h2>
+        </div>
+
+        <div class="mb-4">
+            <h5 class="text-lg font-semibold"><i class="bi bi-person"></i> نام و نام کاربری</h5>
+            <p class="text-sm">{{ user.profile.first_name }} {{ user.profile.last_name }} ({{ user.username }})</p>
+        </div>
+
+        <div class="mb-4">
+            <h5 class="text-lg font-semibold"><i class="bi bi-gem ms-2"></i>وضعیت اشتراک</h5>
+            <p class="text-sm">
+                {% if user.profile.magnusplus_sub %}
+                    اشتراک فعال: {{ user.profile.magnusplus_sub.title }}
+                {% else %}
+                    اشتراک غیرفعال
+                {% endif %}
+            </p>
+        </div>
+        <hr class="border-t border-gray-300 my-4">
+
+        <div class="custom-flex mt-4">
+            <div class="custom-buttons">
+                <a href="{% url 'account:profile-info' %}" class="profile-link">ویرایش حساب کاربری</a>
+                <a href="{% url 'account:profile-order' %}" class="profile-link">سفارش‌ها</a>
+
+                <a href="{% url 'account:address' %}" class="profile-link">آدرس ها</a>
+
+
+                <a href="{% url 'account:profile-magnusplus' %}" class="profile-link">مگنوس پلاس</a>
+                <a href="{% url 'account:logout' %}" class="profile-link logout-link">خروج</a>
+            </div>
+
+            <div class="custom-content">
+                {% block profile-content %}
+                
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br><br><br><br><br><br><br>
+{% endblock %}

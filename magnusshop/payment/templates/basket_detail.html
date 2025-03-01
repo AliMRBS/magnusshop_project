@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block links %}
+    <link rel="stylesheet" href="{% static 'payment/css/styles.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <form method="POST" action="{% url 'payment:create-order' %}">
+    {% csrf_token %}
+        <h3 class="text-center">آدرس ارسال</h3>
+        {% if address %}
+            <table class="table table-bordered table-striped text-center">
+                <thead class="" style="background-color:rgb(120, 74, 196);">
+                    <tr>
+                        <th>استان</th>
+                        <th>شهر</th>
+                        <th>آدرس</th>
+                        <th>پلاک</th>
+                        <th>واحد</th>
+                        <th>کدپستی</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ address.province }}</td>
+                        <td>{{ address.city }}</td>
+                        <td>{{ address.address }}</td>
+                        <td>{{ address.house_number }}</td>
+                        <td>{{ address.unit_number }}</td>
+                        <td>{{ address.zipcode }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-danger">آدرسی انتخاب نشده است.</p>
+        {% endif %}
+
+
+        <br><br>
+         <h3 class="text-center">محصولات در سبد خرید</h3>
+        {% if cart %}
+            <table class="table table-bordered table-striped text-center">
+                <thead class="" style="background-color:rgb(120, 74, 196);">
+                    <tr>
+                        <th>نام محصول</th>
+                        <th>تعداد</th>
+                        <th>قیمت واحد</th>
+                        <th>قیمت کل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td><strong>{{ item.product.title }}</strong></td>
+                            <td>{{ item.quantity }}</td>
+                            <td>
+                                {% if item.product.is_sale %} 
+                                    {{ item.product.sale_price|intcomma }}
+                                {% else %} 
+                                    {{ item.product.price|intcomma }}
+                                {% endif %}
+                            </td>
+                            <td>{{ item.total_price|intcomma }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="" style="background-color:rgb(212, 187, 252);">
+                        <td colspan="3"><strong>مجموع سفارشات:</strong></td>
+                        <td><strong>{{ order_total|intcomma }} تومان</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        <button type="submit" class="btn btn-success">انتقال به صفحه پرداخت</button>
+    </form>
+    {% else %}
+        <p class="text-danger">سبد خرید شما خالی است.</p>
+    {% endif %}
+</div>
+<br><br><br><br><br><br><br><br><br><br><br>
+{% endblock %}

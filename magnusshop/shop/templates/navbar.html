@@ -1,0 +1,115 @@
+{% load static %}
+<div class="container px-4 px-lg-5 mt-3">
+    <div class="row align-items-center">
+        <div class="col-12 col-md-6 d-flex justify-content-start">
+            <a class="navbar-brand nav-link" href="{% url 'product-list' %}">
+                <img src="{% static 'shop/pictures/logo/M_logo.png' %}" alt="Magnus Logo" width="40" height="40" style="">
+                مگنوس
+            </a>
+            <form class="d-flex ms-3" action="{% url 'product-search' %}" method="GET" style="margin-left: 20px;">
+            
+                {% for key, value in request.GET.items %}
+                    {% if key != 'searched' %} 
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endif %}
+                {% endfor %}
+            
+                <input class="form-control me-3" type="search" placeholder="جستجو در محصولات" 
+                       aria-label="Search" name="searched" value="{{ searched }}" required 
+                       style="background-color: #f0f0f0; ">
+            </form>
+                  
+        </div>
+
+        <div class="col d-flex justify-content-end">
+            {% if user.is_authenticated %}    
+                <div class="dropdown user-dropdown">
+                    <button class="btn btn-outline-custom ms-2 dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person"></i>
+                    </button>
+                    <ul class="dropdown-menu text-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{% url 'account:profile' %}"><i class="bi bi-arrow-left ms-2"></i>{{ request.user }}</a></li>
+                        <li><a class="dropdown-item" href="{% url 'account:profile-info' %}"><i class="bi bi-pencil-square ms-2"></i>حساب کاربری</a></li>
+                        <li><a class="dropdown-item" href="{% url 'account:profile-magnusplus' %}"><i class="bi bi-gem ms-2"></i>مگنوس پلاس</a></li>
+                        <li><a class="dropdown-item" href="{% url 'account:profile-order' %}"><i class="bi bi-card-list ms-2"></i>سفارش ها</a></li>
+                        <li><a class="dropdown-item" href="{% url 'account:address' %}"><i class="bi bi-geo-alt-fill ms-2"></i>آدرس ها</a></li>
+                        <li><a class="dropdown-item" href="{% url 'account:logout' %}"><i class="bi bi-box-arrow-right ms-2"></i>خروج</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{% url 'account:login' %}" class="btn btn-outline-custom ms-2">ثبت نام/ ورود</a>
+            {% endif %}
+            <form class='d-flex'>  
+                <a href="{% url 'cart-summary' %}" class="btn btn-outline-custom" >
+                    
+                    <span class="ms-1" id="cart_quantity" >{{ cart|length }}</span>
+                    <i class="bi-cart-fill" ></i>
+                </a>                
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffffff;">
+    <div class="container px-4 px-lg-5">
+        <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mt-2 mb-lg-0 me-lg-4 custom-navbar-nav">
+                <li class="nav-item dropdown ms-2">
+                    <a class="nav-link " href="#" id="categoryDropdown" role="button" aria-expanded="false">
+                        <i class="bi bi-list" style="color: black;"></i>
+                        دسته بندی محصولات
+                    </a>
+                    <div class="dropdown-menu category-dropdown-menu">
+                        <div class="dropdown-column">
+                            <ul class="list-unstyled">
+                                {% for category in categories %}
+                                    {% if not category.parent %}
+                                        <li class="dropdown-submenu" data-category-id="{{ category.id }}">
+                                            <a class="dropdown-item" href="#">
+                                                {{ category.name }}
+                                                <i class="bi bi-arrow-left" style="margin-right: 8px;"></i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="dropdown-column subcategory-container">
+                            {% for category in categories %}
+                                {% if not category.parent %}
+                                    <div class="subcategory-list" data-category-id="{{ category.id }}">
+                                        <ul class="list-unstyled">
+                                            {% for subcategory in category.children.all %}
+                                                <li><a class="dropdown-item" href="{{ subcategory.get_absolute_url }}">{{ subcategory.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>                    
+                </li>
+                
+                <li class="nav-item"><a class="nav-link ms-2" aria-current="page" href="{% url 'product-off' %}">تخفیف‌ها</a></li>
+                <li class="nav-item"><a class="nav-link ms-2"  href="{% url 'magnusplus:pricing' %}" role="button">مگنوس پلاس</a></li>
+                <li class="nav-item"><a class="nav-link ms-2" href="{% url 'about-us' %}">درباره ما</a></li>
+            </ul>
+            
+            
+        </div>
+    </div>
+</nav>
+
+<hr style="border: 1px solid black; margin: 0 ;color: mediumslateblue;">
+
+<script>
+    var navbarToggler = document.querySelector('.navbar-toggler');
+    var navbarCollapse = document.querySelector('#navbarSupportedContent');
+
+    navbarToggler.addEventListener('click', function() {
+        navbarCollapse.classList.toggle('show');
+    });
+
+</script>

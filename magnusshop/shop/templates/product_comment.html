@@ -1,0 +1,69 @@
+
+
+    <div class="card mb-3">
+        <p style="font-weight: bold; margin-top: 20px; margin-right: 10px;">
+            <span style="display: inline-block; border-bottom: 4px solid lightblue; padding: 5px;">نظرات:</span>
+        </p>
+        
+        <div class="container comments-section m-1" style="padding: 0px 25px 15px 25px;">
+            {% if comments  %}
+                {% for comment in comments %}
+                    <div class="comment-box">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ comment.name }}</span>
+                            <span class="comment-date">{{ comment.created_time }}</span>
+                        </div>
+                        <div class="comment-content">
+                            <p>{{ comment.comment }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-comments">هیچ نظری برای این محصول ثبت نشده است.</div>
+            {% endif %}
+            <br><br><br><br>
+        {% if request.user.is_authenticated and request.user.profile.is_verified %}
+        <form method="POST" action="{% url 'product-comment' product.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <div>
+                <label for="name" class="block text-sm/6 font-medium text-gray-900">نام</label>
+                <div class="mt-2">
+                {{ form.name }}
+                </div>
+            </div>
+            <div>
+                <label for="comment" class="block text-sm/6 font-medium text-gray-900">کامنت</label>
+                <div class="mt-2">
+                {{ form.comment }}
+                </div>
+            </div>
+             <button type="submit" class="btn btn-success">ثبت نظر</button>
+                </form>
+        {% elif request.user.is_authenticated and not request.user.profile.is_verified %}
+        <div class="no-comments">برای ثبت نظر ابتدا باید ایمیل خود را تایید کنید</div>
+        
+        <div class="text-center">
+            <a href="{% url 'account:verify-email' user_id=request.user.id %}?next={% url 'product-detail' pk=product.pk %}" class="btn btn-outline-custom-buy d-inline-block mt-3 ms-2">تایید ایمیل</a>
+        </div>
+        {% else %}
+        <div class="no-comments">برای ثبت نظر ابتدا باید وارد سایت شوید</div>
+        <div class="text-center">
+            <a href="{% url 'account:login' %}?next={% url 'product-detail' pk=product.pk %}" class="btn btn-outline-custom-buy d-inline-block mt-3 ms-2">ثبت نام/ ورود</a>
+        </div>
+        {% endif %}
+        </div>
+    </div>
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+

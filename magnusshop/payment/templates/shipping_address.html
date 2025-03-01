@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="text-center">انتخاب آدرس ارسال</h3>
+    <hr>
+
+    <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addressModal" onclick="openAddModal()">
+        افزودن آدرس جدید
+    </button>
+    <br><br>
+
+    <form method="post" action="{% url 'payment:save-shipping-address' %}">
+        {% csrf_token %}
+        {% for addr in addresses %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <input type="radio" name="selected_address" id="address_{{ addr.id }}" value="{{ addr.id }}" required>
+                <label for="address_{{ addr.id }}">
+                    <p><strong>{{ addr.province }} - {{ addr.city }}</strong></p>
+                    <p>{{ addr.address }} - پلاک {{ addr.house_number }} - واحد {{ addr.unit_number }} - کد پستی: {{ addr.zipcode }}</p>
+                </label>
+                <button type="button" class="btn btn-warning btn-sm" onclick="openEditModal({{ addr.id }}, '{{ addr.province }}', '{{ addr.city }}', '{{ addr.address }}', '{{ addr.house_number }}', '{{ addr.unit_number }}', '{{ addr.zipcode }}')">
+                    ویرایش
+                </button>
+
+            </div>
+        </div>
+        {% empty %}
+        <p>هنوز هیچ آدرسی ثبت نشده است.</p>
+        {% endfor %}
+
+        <button type="submit" id="completeCheckout" class="btn btn-success" disabled>تکمیل خرید</button>
+    </form>
+<br><br><br><br><br><br><br><br><br><br><br>
+
+</div>
+
+
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addressModalLabel">مدیریت آدرس</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addressForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" id="action" value="add">
+                    <input type="hidden" name="address_id" id="address_id">
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">ذخیره</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openAddModal() {
+        document.getElementById('addressForm').reset();
+        document.getElementById('action').value = 'add';
+        document.getElementById('addressModalLabel').textContent = 'افزودن آدرس';
+        const modal = new bootstrap.Modal(document.getElementById('addressModal'));
+        modal.show();
+    }
+
+    function openEditModal(id, province, city, address, house_number, unit_number, zipcode) {
+        document.getElementById('address_id').value = id;
+        document.getElementById('action').value = 'edit';
+        document.getElementById('id_province').value = province;
+        document.getElementById('id_city').value = city;
+        document.getElementById('id_address').value = address;
+        document.getElementById('id_house_number').value = house_number;
+        document.getElementById('id_unit_number').value = unit_number;
+        document.getElementById('id_zipcode').value = zipcode;
+        document.getElementById('addressModalLabel').textContent = 'ویرایش آدرس';
+        const modal = new bootstrap.Modal(document.getElementById('addressModal'));
+        modal.show();
+    }
+
+    function handleModalClose() {
+        const modalElement = document.getElementById('addressModal');
+    
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            document.body.classList.remove('modal-open');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        });
+    }
+
+
+    document.getElementById('addressForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        const form = this;
+        const formData = new FormData(form);
+        const action = formData.get('action');
+        const url = action === 'add'
+            ? '{% url "payment:add-address" %}'
+            : '{% url "payment:edit-address" pk=0 %}'.replace('0', formData.get('address_id'));
+    
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+    
+                location.reload();
+            } else if (data.errors) {
+                alert('خطایی رخ داده است: ' + JSON.stringify(data.errors));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('مشکلی در ارتباط با سرور پیش آمد.');
+        });
+    });
+    
+    document.getElementById('completeCheckout').addEventListener('click', function () {
+        const form = document.getElementById('shippingAddressForm');
+        const formData = new FormData(form);
+    
+        fetch("{% url 'payment:save-shipping-address' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('مشکلی در ارسال درخواست پیش آمد.');
+        });
+    });
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkoutButton = document.getElementById("completeCheckout");
+        const addressRadios = document.querySelectorAll("input[name='selected_address']");
+    
+        if (addressRadios.length === 0) {
+            checkoutButton.disabled = true;
+            checkoutButton.classList.add("btn-secondary");
+            checkoutButton.classList.remove("btn-success");
+        }
+    
+        addressRadios.forEach(radio => {
+            radio.addEventListener("change", function () {
+                if (document.querySelector("input[name='selected_address']:checked")) {
+                    checkoutButton.disabled = false;
+                    checkoutButton.classList.remove("btn-secondary");
+                    checkoutButton.classList.add("btn-success");
+                }
+            });
+        });
+    });
+    
+</script>
+{% endblock %}

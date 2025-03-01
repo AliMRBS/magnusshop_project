@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+<br>
+
+    {% if cart_products %}
+    
+    
+    <div class="container">
+        <h3 class="text-center">سبد خرید</h3>
+        <hr>
+        {% for product in cart_products %}
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for image in product.images.all %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <a href="{{ image.image.url }}" data-fancybox="gallery" data-caption="{{ product.title }}">
+                                    <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ product.title }}">
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">قبلی</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">بعدی</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.title }}</h5><br>
+                        {% if product.is_sale %}
+                            <p>قیمت: <strike>{{ product.price|intcomma }}</strike></p>
+                            <p class="card-text">قیمت با تخفیف ویژه: {{ product.sale_price|intcomma }}</p>
+                        {% else %}
+                            <p class="card-text">قیمت: {{ product.price|intcomma }}</p>
+                        {% endif %}
+
+    
+                        <label for="cart-qty">تعداد:</label>
+                        <div class="input-group quantity-input">
+                            <button type="button" class="btn btn-outline-secondary quantity-btn increase-qty" data-index="{{ product.id }}">+</button>
+                            <input type="text" class="form-control cart-qty-input" id="input{{ product.id }}" value="{% for key,value in quantities.items %}{% if key == product.id|slugify %}{{ value }}{% endif %}{% endfor %}" min="1" max="5" style="text-align: center; max-width: 60px; border-radius: 0;">
+                            <button type="button" class="btn btn-outline-secondary quantity-btn decrease-qty" data-index="{{ product.id }}">-</button>
+                        </div>
+                        
+                        <br>
+                        <button type="button" data-index={{product.id}}
+                        class="btn btn-primary update-cart">ویرایش</button>
+                        <button type="button" data-index={{product.id}}
+                        class="btn btn-danger delete-product">حذف</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <h5>مجموع کل سفارشات: {{ total_price|intcomma }} تومان</h5><br>
+
+        <a href="{% url 'payment:shipping-address' %}" class="btn btn-success ms-2">تکمیل خرید</a>
+    </div>
+
+
+    {% else %}
+    <center>
+        <p class="container" style="font-size: 1.5em;">سبد خرید شما خالی است!</p>
+        <i class="fas fa-shopping-basket fa-5x" style="color: gray;"></i>
+
+    </center>
+    {% endif %}
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<script>
+    $(document).on('click', '.increase-qty', function () {
+        let productId = $(this).data('index'); 
+        let qtyInput = $('#input' + productId); 
+        let currentQty = parseInt(qtyInput.val(), 10); 
+        if (currentQty < 5) { 
+            qtyInput.val(currentQty + 1); 
+        }
+    });
+
+    $(document).on('click', '.decrease-qty', function () {
+        let productId = $(this).data('index'); 
+        let qtyInput = $('#input' + productId); 
+        let currentQty = parseInt(qtyInput.val(), 10); 
+        if (currentQty > 1) { 
+            qtyInput.val(currentQty - 1); 
+        }
+    });
+
+    $(document).on('click', '.update-cart', function (e) {
+        e.preventDefault();
+        let productId = $(this).data('index'); 
+        let productQty = $('#input' + productId).val(); 
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-update" %}', 
+            data: {
+                product_id: productId, 
+                product_qty: productQty, 
+                csrfmiddlewaretoken: '{{ csrf_token }}', 
+                action: 'post',
+            },
+            success: function (json) {
+                location.reload(); 
+            },
+            error: function (xhr, errmsg, err) {
+                console.error('Error:', errmsg);
+            },
+        });
+    });
+
+    $(document).on('click', '.delete-product', function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-delete" %}', 
+            data: {
+                product_id:$(this).data('index'), 
+                csrfmiddlewaretoken: '{{ csrf_token }}', 
+                action: 'post',
+            },
+            success: function (json) {
+                location.reload(); 
+            },
+            error: function (xhr, errmsg, err) {
+                console.error('Error:', errmsg); 
+            },
+        });
+    });
+
+
+</script>
+{% endblock %}
